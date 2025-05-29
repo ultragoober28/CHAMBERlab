@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D First-Person Platformer</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+    #instructions {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: sans-serif;
+      background: rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+    #debug {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: white;
+      font-family: monospace;
+      background: rgba(0,0,0,0.5);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">Click to play</div>
+  <div id="debug">Speed: 0</div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script>
+    let scene, camera, renderer;
+    let player, velocity, canJump = false;
+    let pitchObject, yawObject;
+    const keys = {};
+    const playerSize = 1;
+
+    const platforms = [];
+    const gravity = 0.01;
+    const jumpStrength = 0.2;
+    const fallThreshold = -10;
+
+    const baseSpeed = 0.1;
+    let slideSpeed = 0;
+    const maxSlideTime = 60;
+    let slideTimer = 0;
+    const slideDecay = 0.01;
+    let isSliding = false;
+
+    init();
+    animate();
+
+    function init() {
+      scene = new THREE.Scene();
+
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      pitchObject = new THREE.Object3D();
+      pitchObject.add(camera);
+      yawObject = new THREE.Object3D();
+      yawObject.position.y = playerSize;
+      yawObject.add(pitchObject);
+
+      player = new THREE.Object3D();
+      velocity = new THREE.Vector3();
+      player.add(yawObject);
+      scene.add(player);
+
+      const loader = new THREE.TextureLoader();
+      const texture = loader.load('https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/texture_01_0.png?v=1748353508017');
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(4, 4);
+
+      const platformGeo = new THREE.BoxGeometry(10, 1, 10);
+      const platformMat = new THREE.MeshBasicMaterial({ map: texture });
+      const platform = new THREE.Mesh(platformGeo, platformMat);
+      platform.position.y = 0;
+      scene.add(platform);
+      platforms.push(platform);
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      document.addEventListener('keydown', e => keys[e.code] = true);
+      document.addEventListener('keyup', e => keys[e.code] = false);
+
+      const instructions = document.getElementById('instructions');
+      instructions.addEventListener('click', () => {
+        instructions.style.display = 'none';
+        renderer.domElement.requestPointerLock();
+      });
+
+      document.addEventListener('pointerlockchange', () => {
+        if (document.pointerLockElement === renderer.domElement) {
+          document.addEventListener('mousemove', onMouseMove, false);
+        } else {
+          document.removeEventListener('mousemove', onMouseMove, false);
+          instructions.style.display = 'flex';
+        }
+      });
+    }
+
+    function onMouseMove(event) {
+      const movementX = event.movementX || 0;
+      const movementY = event.movementY || 0;
+      yawObject.rotation.y -= movementX * 0.002;
+      pitchObject.rotation.x -= movementY * 0.002;
+      pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+    }
+
+    function update() {
+      const moveDir = new THREE.Vector3();
+      if (keys['KeyW']) moveDir.z -= 1;
+      if (keys['KeyS']) moveDir.z += 1;
+      if (keys['KeyA']) moveDir.x -= 1;
+      if (keys['KeyD']) moveDir.x += 1;
+      moveDir.normalize().applyEuler(yawObject.rotation);
+
+      if (keys['ShiftLeft'] && keys['KeyW'] && canJump && !isSliding) {
+        isSliding = true;
+        slideSpeed = 0.2;
+        slideTimer = maxSlideTime;
+      }
+
+      if (isSliding) {
+        slideSpeed = Math.max(slideSpeed - slideDecay, 0);
+        slideTimer--;
+
+        pitchObject.position.y = THREE.MathUtils.lerp(pitchObject.position.y, -0.5, 0.1);
+        camera.rotation.z = THREE.MathUtils.lerp(camera.rotation.z, 0.2, 0.1);
+
+        if (slideSpeed <= 0 || slideTimer <= 0 || !keys['KeyW']) {
+          isSliding = false;
+        }
+      } else {
+        pitchObject.position.y = THREE.MathUtils.lerp(pitchObject.position.y, 0, 0.1);
+        camera.rotation.z = THREE.MathUtils.lerp(camera.rotation.z, 0, 0.1);
+      }
+
+      const currentSpeed = baseSpeed + (isSliding ? slideSpeed : 0);
+      const moveVelocity = moveDir.clone().multiplyScalar(currentSpeed);
+
+      player.position.x += moveVelocity.x;
+      player.position.z += moveVelocity.z;
+
+      velocity.y -= gravity;
+      player.position.y += velocity.y;
+
+      let onPlatform = false;
+      for (const platform of platforms) {
+        const px = player.position.x;
+        const py = player.position.y;
+        const pz = player.position.z;
+
+        const halfX = platform.scale.x * 5;
+        const halfZ = platform.scale.z * 5;
+
+        const box = {
+          minX: platform.position.x - halfX,
+          maxX: platform.position.x + halfX,
+          minY: platform.position.y + 0.5,
+          maxY: platform.position.y + 0.5 + playerSize,
+          minZ: platform.position.z - halfZ,
+          maxZ: platform.position.z + halfZ,
+        };
+
+        const touchingX = px >= box.minX && px <= box.maxX;
+        const touchingZ = pz >= box.minZ && pz <= box.maxZ;
+        const landing = py <= box.minY && py >= box.minY - 0.5;
+
+        if (touchingX && touchingZ && landing) {
+          player.position.y = box.minY;
+          velocity.y = 0;
+          onPlatform = true;
+        }
+      }
+
+      canJump = onPlatform;
+
+      if (keys['Space'] && canJump) {
+        velocity.y = jumpStrength;
+        canJump = false;
+        isSliding = false;
+      }
+
+      if (player.position.y < fallThreshold) resetPlayer();
+
+      const speed = new THREE.Vector2(moveVelocity.x, moveVelocity.z).length();
+      document.getElementById('debug').textContent = `Speed: ${speed.toFixed(2)}`;
+    }
+
+    function resetPlayer() {
+      player.position.set(0, 5, 0);
+      velocity.set(0, 0, 0);
+      isSliding = false;
+    }
+
+    //animating
+    function animate() {
+      requestAnimationFrame(animate);
+      update();
+      renderer.render(scene, camera);
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

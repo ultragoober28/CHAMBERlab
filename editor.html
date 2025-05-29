@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Editor</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+    /* Controls */
+    .controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mode-button {
+      width: 40px;
+      height: 40px;
+      background: #333;
+      border: 2px solid white;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .mode-button.active {
+      background: #0a84ff;
+    }
+    /* UI Buttons */
+    #ui-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    #ui-container button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- UI Buttons -->
+  <div id="ui-container">
+    <div class="dropdown">
+      <button id="add-object">Add Object</button>
+      <div class="dropdown-content" style="display:none;">
+        <button id="add-block">Block</button>
+        <button id="add-player-spawn">Player Spawn</button>
+      </div>
+    </div>
+    <button id="save-json">Save JSON</button>
+    <button id="load-json">Load JSON</button>
+  </div>
+
+  <!-- Transform Mode Buttons -->
+  <div class="controls">
+    <button class="mode-button" id="mode-translate">M</button>
+    <button class="mode-button" id="mode-rotate">R</button>
+    <button class="mode-button" id="mode-scale">S</button>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'https://esm.sh/three@0.160.0';
+    import { TransformControls } from 'https://esm.sh/three@0.160.0/examples/jsm/controls/TransformControls.js';
+
+    let camera, scene, renderer;
+    let yawObject, pitchObject;
+    let raycaster = new THREE.Raycaster();
+    let mouse = new THREE.Vector2();
+    const keys = {};
+    let isShiftDown = false;
+    let isDragging = false;
+    let selectableObjects = [];
+    let selectedObject = null;
+    let transformControls;
+
+    // Store objects as { name, obj }
+    const objects = [];
+
+    init();
+    animate();
+
+    function init() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x222222);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      yawObject = new THREE.Object3D();
+      pitchObject = new THREE.Object3D();
+      pitchObject.add(camera);
+      yawObject.add(pitchObject);
+      yawObject.position.set(0, 5, 10);
+      scene.add(yawObject);
+
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(10, 10, 10);
+      scene.add(light);
+
+      const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambient);
+
+      addTransparentGrid();
+
+      transformControls = new TransformControls(camera, renderer.domElement);
+      transformControls.addEventListener('dragging-changed', function (event) {
+        isDragging = event.value;
+      });
+      scene.add(transformControls);
+
+      window.addEventListener('contextmenu', e => e.preventDefault());
+
+      window.addEventListener('mousedown', e => {
+        if (e.button === 0 && !isShiftDown && !isDragging) {
+          onLeftClick(e);
+        }
+      });
+
+      window.addEventListener('mousemove', e => {
+        if (!isShiftDown || isDragging) return;
+        yawObject.rotation.y -= e.movementX * 0.002;
+        pitchObject.rotation.x -= e.movementY * 0.002;
+        pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+      });
+
+      window.addEventListener('keydown', e => {
+        keys[e.code] = true;
+        if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+          isShiftDown = true;
+          if (!document.pointerLockElement) {
+            document.body.requestPointerLock();
+          }
+        }
+      });
+
+      window.addEventListener('keyup', e => {
+        keys[e.code] = false;
+        if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+          isShiftDown = false;
+          if (document.pointerLockElement) {
+            document.exitPointerLock();
+          }
+        }
+      });
+
+      window.addEventListener('resize', onWindowResize);
+
+      document.getElementById('add-block').addEventListener('click', () => addBlock());
+      document.getElementById('add-player-spawn').addEventListener('click', () => addPlayerSpawnPoint());
+
+      document.getElementById('save-json').addEventListener('click', saveMap);
+      document.getElementById('load-json').addEventListener('click', loadMap);
+
+      // Dropdown simplified: show on add-object click, hide on click outside
+      const addObjectBtn = document.getElementById('add-object');
+      const dropdownContent = addObjectBtn.nextElementSibling;
+      addObjectBtn.addEventListener('click', () => {
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+      });
+      window.addEventListener('click', e => {
+        if (!addObjectBtn.contains(e.target) && !dropdownContent.contains(e.target)) {
+          dropdownContent.style.display = 'none';
+        }
+      });
+
+      const modeButtons = {
+        translate: document.getElementById('mode-translate'),
+        rotate: document.getElementById('mode-rotate'),
+        scale: document.getElementById('mode-scale'),
+      };
+
+      function setMode(mode) {
+        transformControls.setMode(mode);
+        Object.entries(modeButtons).forEach(([key, btn]) => {
+          btn.classList.toggle('active', key === mode);
+        });
+      }
+
+      modeButtons.translate.addEventListener('click', () => setMode('translate'));
+      modeButtons.rotate.addEventListener('click', () => setMode('rotate'));
+      modeButtons.scale.addEventListener('click', () => setMode('scale'));
+
+      setMode('translate');
+    }
+
+    function addTransparentGrid() {
+      const gridSize = 50;
+      const gridHelper = new THREE.GridHelper(gridSize, gridSize);
+      gridHelper.material.opacity = 0.2;
+      gridHelper.material.transparent = true;
+      scene.add(gridHelper);
+    }
+
+    function addBlock() {
+      const obj = new THREE.Mesh(
+        new THREE.BoxGeometry(5, 1, 5),
+        new THREE.MeshStandardMaterial({ color: 0x5555ff })
+      );
+      obj.position.set(0, 0, 0);
+      scene.add(obj);
+      objects.push({ name: 'Cube', obj });
+      selectableObjects.push(obj);
+    }
+
+    function addPlayerSpawnPoint() {
+      const obj = new THREE.Mesh(
+        new THREE.SphereGeometry(0.5),
+        new THREE.MeshBasicMaterial({ color: 0xff0000 })
+      );
+      obj.position.set(0, 0, 0);
+      scene.add(obj);
+      objects.push({ name: 'PlayerSpawn', obj });
+      selectableObjects.push(obj);
+    }
+
+    function saveMap() {
+      // Save with rotation order string (using 'XYZ' as default)
+      const data = objects.map(({ name, obj }) => ({
+        name,
+        position: obj.position.toArray(),
+        rotation: [...obj.rotation.toArray(), 'XYZ'], // rotation order saved as 4th element
+        scale: obj.scale.toArray(),
+      }));
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'map.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function loadMap() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const data = JSON.parse(e.target.result);
+            clearScene();
+            data.forEach(item => {
+              const obj = createObject(item);
+              objects.push({ name: item.name, obj });
+              scene.add(obj);
+              selectableObjects.push(obj);
+            });
+          };
+          reader.readAsText(file);
+        }
+      });
+      input.click();
+    }
+
+    function clearScene() {
+      // Remove all objects from scene except lights, camera, grid, and transformControls
+      for (let i = scene.children.length - 1; i >= 0; i--) {
+        const child = scene.children[i];
+        if (
+          child !== camera &&
+          child !== yawObject &&
+          child !== pitchObject &&
+          child !== transformControls &&
+          !(child.isLight) &&
+          !(child.type === 'GridHelper')
+        ) {
+          scene.remove(child);
+        }
+      }
+      objects.length = 0;
+      selectableObjects.length = 0;
+      transformControls.detach();
+      selectedObject = null;
+    }
+
+    function createObject(data) {
+      let obj;
+      if (data.name === 'Cube') {
+        obj = new THREE.Mesh(
+          new THREE.BoxGeometry(5, 1, 5),
+          new THREE.MeshStandardMaterial({ color: 0x5555ff })
+        );
+      } else if (data.name === 'PlayerSpawn') {
+        obj = new THREE.Mesh(
+          new THREE.SphereGeometry(0.5),
+          new THREE.MeshBasicMaterial({ color: 0xff0000 })
+        );
+      } else {
+        // Default fallback: simple cube
+        obj = new THREE.Mesh(
+          new THREE.BoxGeometry(1, 1, 1),
+          new THREE.MeshStandardMaterial({ color: 0x888888 })
+        );
+      }
+      obj.position.fromArray(data.position);
+
+      // Rotation array is [x, y, z, order]
+      const rot = data.rotation;
+      if (rot.length === 4) {
+        obj.rotation.order = rot[3];
+        obj.rotation.set(rot[0], rot[1], rot[2]);
+      } else {
+        obj.rotation.set(rot[0], rot[1], rot[2]);
+        obj.rotation.order = 'XYZ';
+      }
+      obj.scale.fromArray(data.scale);
+      return obj;
+    }
+
+    function onLeftClick(event) {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(selectableObjects);
+      transformControls.detach();
+      if (intersects.length > 0) {
+        selectedObject = intersects[0].object;
+        transformControls.attach(selectedObject);
+      }
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+  </script>
+
+</body>
+</html>

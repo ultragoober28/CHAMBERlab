@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level Select</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: #1c1c1c;
+      font-family: sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 2rem;
+      font-size: 3rem;
+    }
+
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 3rem;
+    }
+
+    .level-button {
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .level-button:hover {
+      transform: scale(1.05);
+    }
+
+    .level-button img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: #555;
+    }
+
+    .level-name {
+      padding: 0.5rem;
+      font-size: 1.1rem;
+      background: #222;
+    }
+
+    .editor-button {
+      font-size: 1.3rem;
+      padding: 0.75rem 2rem;
+      background: #007bff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .editor-button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Select a Level</h1>
+
+  <div class="level-grid">
+    <div class="level-button" onclick="loadLevel(1)">
+      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 1">
+      <div class="level-name">Level 1</div>
+    </div>
+    <div class="level-button" onclick="loadLevel(2)">
+      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 2">
+      <div class="level-name">Level 2</div>
+    </div>
+    <div class="level-button" onclick="loadLevel(3)">
+      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 3">
+      <div class="level-name">Level 3</div>
+    </div>
+    <div class="level-button" onclick="loadLevel(4)">
+      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 4">
+      <div class="level-name">Level 4</div>
+    </div>
+    <div class="level-button" onclick="loadLevel(5)">
+      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 5">
+      <div class="level-name">Level 5</div>
+    </div>
+  </div>
+
+<button onclick="window.location.href='editor.html'">Level Editor</button>
+
+  <script>
+    function loadLevel(levelNumber) {
+      alert(`Loading Level ${levelNumber}...`);
+      // Replace with actual navigation or logic
+    }
+
+    function openLevelEditor() {
+      alert("Opening Level Editor...");
+      // Replace with actual navigation or logic
+    }
+  </script>
+</body>
+</html>
+ 
