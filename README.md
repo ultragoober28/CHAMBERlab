@@ -65,9 +65,9 @@ Level Editor gives buttons to create a new level, and to load a .json.
 
 ## Getting Started
 
-Go to https://ultragoober28.github.io/CHAMBERlab/
-Press PLAY, and choose to play levels or use Editor
-Change Settings if you need to
+1. Go to https://ultragoober28.github.io/CHAMBERlab/
+2. Press PLAY, and choose to play levels or use Editor.
+3. Change Settings if you need to.
 
 ---
 
