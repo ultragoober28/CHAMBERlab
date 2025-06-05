@@ -1,4 +1,4 @@
-![Alt text](path/to/image.png)
+![Alt text](images/probably final logo (just bc it looks cool).png)
 Welcome to **CHAMBERlab** — a fun and simple game where you can **play** levels and **create** your own!
 
 ---
