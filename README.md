@@ -20,16 +20,16 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 
 ## How to Play: Gameplay
 
-- Use WASD to move your character and use the mouse to move the camera.
-- Jump with the spacebar.
-- Hold Shift to slide.
-- Access the level editor from the main menu to start building your own levels.
+- Use **WASD** to move your character and use the mouse to move the camera.
+- Jump with the **spacebar**.
+- Hold **Shift** to slide.
+- Access the **level editor** from the **main menu** to start building your own levels.
 
 # Editor Guide
 
 ## Keyboard Controls
 - Similar controls to gameplay.
-- Hold Shift to be able to move camera around.
+- **Hold** **Shift** to be able to move camera around.
 - Hold E and Q to move camera up and down.
 - Ctrl + C and Ctrl + V to copy and paste created objects.
 
