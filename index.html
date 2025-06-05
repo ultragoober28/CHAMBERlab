@@ -34,6 +34,9 @@
   <div id="debug">Speed: 0</div>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
   <script>
+    
+      window.location.href = 'mainmenu.html';
+    
     let scene, camera, renderer;
     let player, velocity, canJump = false;
     let pitchObject, yawObject;
@@ -71,7 +74,7 @@
       scene.add(player);
 
       const loader = new THREE.TextureLoader();
-      const texture = loader.load('https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/texture_01_0.png?v=1748353508017');
+      const texture = loader.load('https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/texture_01.png?v=1748571085535');
       texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
       texture.repeat.set(4, 4);
 
