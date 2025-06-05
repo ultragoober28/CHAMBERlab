@@ -1,4 +1,4 @@
-![Alt text](images/probably final logo (just bc it looks cool).png)
+![Screenshot](images/skibidi.png)
 Welcome to **CHAMBERlab** — a fun and simple game where you can **play** levels and **create** your own!
 
 ---
