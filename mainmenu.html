@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cool Platformer Game</title>
+  <title>CHAMBER.lab</title>
   <style>
     body {
       margin: 0;
@@ -22,30 +22,88 @@
       margin-bottom: 2rem;
     }
 
+    /* Stylish Button */
     button {
+      position: relative;
       font-size: 1.5rem;
-      padding: 0.75rem 2rem;
-      background: #28a745;
+      padding: 0.75rem 2.5rem;
+      background: linear-gradient(135deg, #d1d1d1, #b3b3b3);
       border: none;
-      border-radius: 8px;
-      color: white;
+      border-radius: 10px;
+      color: black;
       cursor: pointer;
-      transition: background 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
     }
 
     button:hover {
-      background: #218838;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
     }
+
+    button:active {
+      transform: scale(0.95);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Shine on hover */
+    button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: skewX(-20deg);
+      transition: left 0.4s ease;
+    }
+
+    button:hover::before {
+      left: 130%;
+    }
+
+    /* Transition overlay */
+    .transition-overlay {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: black;
+      z-index: 9999;
+      transition: left 0.6s ease-in-out;
+    }
+
+    .transition-overlay.active {
+      left: 0;
+    }
+
+    .transition-overlay.exit {
+      left: 100%;
+    }
+    
+    .title-image {
+  width: 600px;
+  height: auto;
+}
+
   </style>
 </head>
 <body>
-  <h1>Cool Platfomer Game</h1>
-<button onclick="window.location.href='levelselect.html'">Play</button>
+  <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/probably%20final%20logo%20(just%20bc%20it%20looks%20cool).png?v=1749133013769" alt="CHAMBERlab Title" class="title-image">
+  <button onclick="startGame()">START</button>
+
+  <div class="transition-overlay" id="transition"></div>
 
   <script>
     function startGame() {
-      // Replace this with your game start logic
-      alert("Game starting...");
+      const overlay = document.getElementById('transition');
+      overlay.classList.add('active');
+      setTimeout(() => {
+        window.location.href = 'levelselect.html';
+      }, 600);
     }
   </script>
 </body>
