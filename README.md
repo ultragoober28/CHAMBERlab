@@ -34,10 +34,31 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 - Hold E and Q to move camera up and down.
 - Ctrl + C and Ctrl + V to copy and paste created objects.
 
-## Editor Buttons
+# Editor Buttons
+## Top Left: Transform buttons
 - On the top right, use the M (Move), R (Rotate), and S (Scale) buttons to move, scale and rotate object as you please.
+## Bottom Left: Position Shower and Subtype Editor
 - The position of the selected object is shown on the bottom left.
-- ### IMPORTANT:
+- ### IMPORTANT: Use the Subtype Changer beside the object position mentionned to change object subtypes from Ground and Wall. Not using the correct subtype (eg. using Ground subtype on something supposed to be a wall) will result in broken collision.
+- There are visual indicatiors to show what subtype is on what object, Green objects have the Ground subtype, and Red object have the Wall subtype.
+  ## Top Right: Add Objects, Subtype Selector, Save and Load JSON Files
+  - Add Object brings a menu to select from Cube and Player Spawn.
+  - Subtype Selector and Subtype Editor are different, the one on the top right is what will be selected on the newly added object.
+  - Saving JSON files is easy, all you need to do is make a level, press the button, and it will save the .json file on your computer. This can be used on the main menu, you will be able to load it, and it will be in the level list (if it is has valid map data).
+ 
+# Main Menu
+## There are three menus. Play Levels, Level Editor, and Settings.
+- Play Levels gives many complete pre-made levels made by the developer to play.
+
+Level Editor gives buttons to create a new level, and to load a .json. 
+
+- Loading a .json file is easy, when you have a valid .json file with valid map data, it will appear in the level list.
+-  When selecting the newly added level, two options will appear: Play, and Edit.
+-  - Play will load the level in gameplay.
+   - Edit will open the editor with the level automatically loaded.
+
+- Settings has settings to change.
+
 ---
 
 ## Getting Started
