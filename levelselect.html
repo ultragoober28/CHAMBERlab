@@ -1,115 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Level Select</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 2rem;
-      background: #1c1c1c;
-      font-family: sans-serif;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Game Menu</title>
+    <style>
+      body {
+        margin: 0;
+        background: #1c1c1c;
+        font-family: sans-serif;
+        color: white;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-    h1 {
-      margin-bottom: 2rem;
-      font-size: 3rem;
-    }
+      .sidebar {
+        width: 200px;
+        background: #111;
+        padding: 2rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        border-right: 2px solid #2c2c2c;
+      }
 
-    .level-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 2rem;
-      width: 100%;
-      max-width: 800px;
-      margin-bottom: 3rem;
-    }
+      .menu-button {
+        font-size: 1.2rem;
+        padding: 0.75rem 1rem;
+        background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
 
-    .level-button {
-      background: #333;
-      border-radius: 10px;
-      overflow: hidden;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
+      .menu-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      }
 
-    .level-button:hover {
-      transform: scale(1.05);
-    }
+      .content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
 
-    .level-button img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      background: #555;
-    }
+      .section {
+        display: none;
+      }
 
-    .level-name {
-      padding: 0.5rem;
-      font-size: 1.1rem;
-      background: #222;
-    }
+      .section.active {
+        display: block;
+      }
 
-    .editor-button {
-      font-size: 1.3rem;
-      padding: 0.75rem 2rem;
-      background: #007bff;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+      .level-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+      }
 
-    .editor-button:hover {
-      background: #0056b3;
-    }
-  </style>
-</head>
-<body>
-  <h1>Select a Level</h1>
+      .level-button {
+        background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
+        border-radius: 12px;
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
 
-  <div class="level-grid">
-    <div class="level-button" onclick="loadLevel(1)">
-      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 1">
-      <div class="level-name">Level 1</div>
+      .level-button:hover {
+        transform: scale(1.06);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      }
+
+      .level-button img {
+        width: 75%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        background: #555;
+      }
+
+      .level-name {
+        padding: 0.5rem;
+        font-size: 1.1rem;
+        background: #222;
+      }
+
+      .editor-button {
+        margin-bottom: 2rem;
+        font-size: 1.3rem;
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+      }
+
+      .editor-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <button class="menu-button" onclick="showSection('levels')">
+        Play Levels
+      </button>
+      <button class="menu-button" onclick="showSection('editor')">
+        Level Editor
+      </button>
+      <button class="menu-button" onclick="showSection('settings')">
+        Settings
+      </button>
     </div>
-    <div class="level-button" onclick="loadLevel(2)">
-      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 2">
-      <div class="level-name">Level 2</div>
-    </div>
-    <div class="level-button" onclick="loadLevel(3)">
-      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 3">
-      <div class="level-name">Level 3</div>
-    </div>
-    <div class="level-button" onclick="loadLevel(4)">
-      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 4">
-      <div class="level-name">Level 4</div>
-    </div>
-    <div class="level-button" onclick="loadLevel(5)">
-      <img src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028" alt="Level 5">
-      <div class="level-name">Level 5</div>
-    </div>
+
+    <div class="content">
+      <div id="levels" class="section active">
+        <h1>Select a Level</h1>
+        <div class="level-grid">
+          <div class="level-button">
+            <img
+              src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028"
+              alt="Level 1"
+            />
+            <div class="level-name">Level 1</div>
+          </div>
+          <div class="level-button">
+            <img
+              src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028"
+              alt="Level 2"
+            />
+            <div class="level-name">Level 2</div>
+          </div>
+          <div class="level-button">
+            <img
+              src="https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028"
+              alt="Level 3"
+            />
+            <div class="level-name">Level 3</div>
+          </div>
+        </div>
+      </div>
+
+<div id="editor" class="section">
+  <h1>Level Editor</h1>
+  <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+    <button class="editor-button" onclick="location.href='editor.html'">+ Create New Level</button>
+    <button class="editor-button" id="load-json-btn">Load JSON</button>
   </div>
 
-<button onclick="window.location.href='editor.html'">Level Editor</button>
+  <p id="no-levels-text">No levels were created yet.</p>
 
-  <script>
-    function loadLevel(levelNumber) {
-      alert(`Loading Level ${levelNumber}...`);
-      // Replace with actual navigation or logic
-    }
+  <div class="level-grid" id="loaded-levels" style="margin-top: 1rem;"></div>
+</div>
 
-    function openLevelEditor() {
-      alert("Opening Level Editor...");
-      // Replace with actual navigation or logic
-    }
-  </script>
-</body>
+<script>
+  const noLevelsText = document.getElementById('no-levels-text');
+  const loadedLevelsContainer = document.getElementById('loaded-levels');
+  const loadJsonBtn = document.getElementById('load-json-btn');
+
+  // Keep loaded level data in memory
+  const loadedLevels = [];
+
+  function updateNoLevelsText() {
+    noLevelsText.style.display = loadedLevels.length === 0 ? 'block' : 'none';
+  }
+
+  // Create the play/edit button panel for a level
+  function createActionButtons(level) {
+    const container = document.createElement('div');
+    container.style.marginTop = '0.5rem';
+    container.style.display = 'flex';
+    container.style.gap = '1rem';
+
+    const playBtn = document.createElement('button');
+    playBtn.textContent = 'Play';
+    playBtn.className = 'editor-button';
+    playBtn.style.padding = '0.3rem 1rem';
+    playBtn.style.fontSize = '1rem';
+
+    playBtn.onclick = () => {
+      // Save JSON string to localStorage and redirect to game.html
+      localStorage.setItem('mapData', level.jsonText);
+      window.location.href = 'game.html';
+    };
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'editor-button';
+    editBtn.style.padding = '0.3rem 1rem';
+    editBtn.style.fontSize = '1rem';
+
+    editBtn.onclick = () => {
+      // Placeholder for future edit functionality
+      alert(`Edit "${level.name}" - Not implemented yet.`);
+    };
+
+    container.appendChild(playBtn);
+    container.appendChild(editBtn);
+    return container;
+  }
+
+  // Create a level button with optional action buttons container
+  function createLevelButton(level) {
+    const div = document.createElement('div');
+    div.className = 'level-button';
+    div.style.cursor = 'pointer';
+    div.style.position = 'relative';
+
+    // Placeholder image
+    const img = document.createElement('img');
+    img.src = 'https://cdn.glitch.global/8c3c2ac5-dbc2-496b-94c7-e63c1a54bb92/placeholder.png?v=1748537130028';
+    img.alt = level.name;
+    div.appendChild(img);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'level-name';
+    nameDiv.textContent = level.name;
+    div.appendChild(nameDiv);
+
+    // Action buttons container (hidden initially)
+    const actionsContainer = createActionButtons(level);
+    actionsContainer.style.display = 'none';
+    div.appendChild(actionsContainer);
+
+    div.addEventListener('click', () => {
+      // Toggle action buttons visibility on click
+      if (actionsContainer.style.display === 'none') {
+        // Hide other action buttons if any
+        document.querySelectorAll('.level-button > div:last-child').forEach(el => {
+          el.style.display = 'none';
+        });
+        actionsContainer.style.display = 'flex';
+      } else {
+        actionsContainer.style.display = 'none';
+      }
+    });
+
+    return div;
+  }
+
+  loadJsonBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          // Validate JSON
+          JSON.parse(reader.result);
+
+          const levelName = file.name.replace(/\.json$/i, '');
+          const levelData = { name: levelName, jsonText: reader.result };
+
+          // Prevent duplicate names
+          if (loadedLevels.some(l => l.name === levelName)) {
+            alert('Level with that name already loaded.');
+            return;
+          }
+
+          loadedLevels.push(levelData);
+
+          const levelBtn = createLevelButton(levelData);
+          loadedLevelsContainer.appendChild(levelBtn);
+
+          updateNoLevelsText();
+        } catch (err) {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    input.click();
+  });
+
+  // Initialize on page load
+  updateNoLevelsText();
+</script>
+
+
+      <div id="settings" class="section">
+        <h1>Settings</h1>
+        <p>Settings options will go here.</p>
+      </div>
+    </div>
+
+    <script>
+      function showSection(id) {
+        document.querySelectorAll(".section").forEach((section) => {
+          section.classList.remove("active");
+        });
+        document.getElementById(id).classList.add("active");
+      }
+    </script>
+  </body>
 </html>
- 
