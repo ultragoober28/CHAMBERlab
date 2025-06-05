@@ -35,12 +35,15 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 
 # Editor Buttons
 ## Top Left: Transform buttons
+![Screenshot](screenshots/TopLeft.png)
 - On the top right, use the M (Move), R (Rotate), and S (Scale) buttons to move, scale and rotate object as you please.
 ## Bottom Left: Position Shower and Subtype Editor
+![Screenshot](screenshots/BottomLeft.png)
 - The position of the selected object is shown on the bottom left.
 - ### IMPORTANT: Use the Subtype Changer beside the object position mentionned to change object subtypes from Ground and Wall. Not using the correct subtype (eg. using Ground subtype on something supposed to be a wall) will result in broken collision.
 - There are visual indicatiors to show what subtype is on what object, Green objects have the Ground subtype, and Red object have the Wall subtype.
   ## Top Right: Add Objects, Subtype Selector, Save and Load JSON Files
+  ![Screenshot](screenshots/TopRight.png)
   - Add Object brings a menu to select from Cube and Player Spawn.
   - Subtype Selector and Subtype Editor are different, the one on the top right is what will be selected on the newly added object.
   - Saving JSON files is easy, all you need to do is make a level, press the button, and it will save the .json file on your computer. This can be used on the main menu, you will be able to load it, and it will be in the level list (if it is has valid map data).
