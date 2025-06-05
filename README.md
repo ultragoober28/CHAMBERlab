@@ -1,48 +1,59 @@
-# Hello website!
+# CHAMBERlab
 
-This is a basic HTML starter project you can build on however you like. No need to save. While you develop your site, your changes will happen ✨ immediately in the preview window. On the left you'll see the files that make up your site, including HTML, JavaScript, and CSS. You can upload assets like images or audio in `assets`. The rest is up to you and your imagination. 🦄
+Welcome to **CHAMBERlab** — a fun and simple game where you can **play** levels and **create** your own!
 
-_Last updated: 28 Feb 2023_
+---
 
-## What's in this project?
+## About
 
-← `README.md`: That's this file, where you can tell people what your cool website does and how you built it.
+CHAMBERlab lets you jump right into playing exciting levels made by the community or unleash your creativity by building your own unique levels. Whether you want to test your platforming skills or craft intricate maps, this game has you covered.
 
-← `index.html`: This is the main web page for your site. The HTML defines the structure and content of the page using _elements_. You'll see references in the HTML to the JS and CSS files. Try clicking the image in the center of the page!
+---
 
-← `style.css`: CSS files add styling rules to your content. The CSS applies styles to the elements in your HTML page. The style rules also make the image move when you click it.
+## Features
 
-← `script.js`: If you're feeling fancy you can add interactivity to your site with JavaScript. The code in the JavaScript file runs when the page loads, and when the visitor clicks the button you can add using the code in the TODO.
+- **Play Levels:** Explore a variety of user-created chambers full of puzzles and platforming fun.
+- **Create Levels:** Use the built-in level editor to design your own chambers with easy-to-use tools.
+- **Share & Load:** Save your creations and share them with friends or load chambers others have made.
+- **Simple Controls:** Intuitive controls make playing and editing accessible to everyone.
 
-Open each file and check out the comments (in gray) for more info.
+---
 
-## Try this next 🏗️
+## How to Play: Gameplay
 
-Take a look in `TODO.md` for next steps you can try out in your new site!
+- Use WASD to move your character and use the mouse to move the camera.
+- Jump with the spacebar.
+- Hold Shift to slide.
+- Access the level editor from the main menu to start building your own levels.
 
-___Want a minimal version of this project to build your own website? Check out [Blank Website](https://glitch.com/edit/#!/remix/glitch-blank-website)!___
+## How to use Editor
 
-## Ready to share your site?
+# Keyboard Controls
+- Similar controls to gameplay.
+- Hold Shift to be able to move camera around.
+- Hold E and Q to move camera up and down.
+- Ctrl + C and Ctrl + V to copy and paste created objects.
 
-Add these meta tags for SEO and social sharing between your page `<head></head>` tags, changing the values for your site:
+---
 
-```
-<link rel="canonical" href="https://glitch-hello-website.glitch.me/" />
-<meta name="description" content="A simple website, built with Glitch. Remix it to get your own."/>
-<meta name="robots" content="index,follow" />
-<meta property="og:title" content="Hello World!" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://glitch-hello-website.glitch.me/" />
-<meta property="og:description" content="A simple website, built with Glitch. Remix it to get your own."/>
-<meta property="og:image" content="https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2Fhello-website-social.png?v=1616712748147"/>
-<meta name="twitter:card" content="summary" />
-```
+## Getting Started
 
-![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
+1. Clone or download this repository.
+2. Open `index.html` in your web browser.
+3. Start playing or creating chambers right away!
 
-## You built this with Glitch!
+---
 
-[Glitch](https://glitch.com) is a friendly community where millions of people come together to build web apps and websites.
+## Contributing
 
-- Need more help? [Check out our Help Center](https://help.glitch.com/) for answers to any common questions.
-- Ready to make it official? [Become a paid Glitch member](https://glitch.com/pricing) to boost your app with private sharing, more storage and memory, domains and more.
+Want to contribute? Feel free to submit bug reports, feature requests, or pull requests. Let’s make CHAMBERlab better together!
+
+---
+
+## License
+
+This project is open source under the [MIT License](LICENSE).
+
+---
+
+Enjoy building and playing!
