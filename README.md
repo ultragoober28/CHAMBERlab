@@ -26,21 +26,25 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 - Hold Shift to slide.
 - Access the level editor from the main menu to start building your own levels.
 
-## How to use Editor
+# Editor Guide
 
-# Keyboard Controls
+## Keyboard Controls
 - Similar controls to gameplay.
 - Hold Shift to be able to move camera around.
 - Hold E and Q to move camera up and down.
 - Ctrl + C and Ctrl + V to copy and paste created objects.
 
+## Editor Buttons
+- On the top right, use the M (Move), R (Rotate), and S (Scale) buttons to move, scale and rotate object as you please.
+- The position of the selected object is shown on the bottom left.
+- ### IMPORTANT:
 ---
 
 ## Getting Started
 
-1. Clone or download this repository.
-2. Open `index.html` in your web browser.
-3. Start playing or creating chambers right away!
+Go to https://ultragoober28.github.io/CHAMBERlab/
+Press PLAY, and choose to play levels or use Editor
+Change Settings if you need to
 
 ---
 
