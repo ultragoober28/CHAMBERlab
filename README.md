@@ -1,4 +1,4 @@
-![Screenshot](images/skibidi.png)
+![Screenshot](prollyfinallogo.png)
 Welcome to **CHAMBERlab** — a fun and simple game where you can **play** levels and **create** your own!
 
 ---
