@@ -13,8 +13,30 @@
         height: 100vh;
         overflow: hidden;
       }
+.title-container {
+  padding: 1.5rem 0.5rem 2rem;
+  text-align: center;
+  border-bottom: 2px solid #2c2c2c;
+  margin-bottom: 1rem;
+}
 
-      .sidebar {
+.game-title-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(0, 150, 255, 0.6));
+  transition: transform 0.3s ease;
+}
+
+.game-title-image:hover {
+  transform: scale(1.03);
+}
+
+/* Adjust sidebar layout */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
         width: 200px;
         background: #111;
         padding: 2rem 1rem;
@@ -112,6 +134,11 @@
   </head>
   <body>
     <div class="sidebar">
+
+        <div class="title-container">
+    <img src="images/prollyfinallogo.png" alt="Game Title" class="game-title-image">
+  </div>
+      
       <button class="menu-button" onclick="showSection('levels')">
         Play Levels
       </button>
