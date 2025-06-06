@@ -19,7 +19,7 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 ---
 
 <details>
-  <summary>## How to Play: Gameplay<summary>
+  <summary>**How to Play: Gameplay**<summary>
 
 - Use **WASD** to move your character and use the mouse to move the camera.
 - Jump with the **spacebar**.
