@@ -348,11 +348,20 @@ pasteButton.addEventListener('click', () => {
       new THREE.MeshBasicMaterial({ color: 0xff0000 })
     );
   } else {
-    obj = new THREE.Mesh(
-      new THREE.BoxGeometry(1, 1, 1),
-      new THREE.MeshStandardMaterial({ color: 0xffffff })
-    );
+    const material = new THREE.MeshStandardMaterial({ 
+      map: gridTexture.clone(),
+      color: SUBTYPE_COLORS[copiedObjectData.subtype] || SUBTYPE_COLORS.ground
+    });
+    obj = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
   }
+
+    // Add subtype to the new object's record
+  objects.push({ 
+    name: copiedObjectData.name, 
+    obj, 
+    subtype: copiedObjectData.subtype 
+  });
+});
 
   // Offset position slightly so it's visible
   obj.position.copy(copiedObjectData.position).add(new THREE.Vector3(1,1,1));
