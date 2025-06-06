@@ -235,10 +235,11 @@
     editBtn.style.padding = '0.3rem 1rem';
     editBtn.style.fontSize = '1rem';
 
-    editBtn.onclick = () => {
-      // Placeholder for future edit functionality
-      alert(`Edit "${level.name}" - Not implemented yet.`);
-    };
+editBtn.onclick = () => {
+  // Save JSON string to localStorage and redirect to editor.html
+  localStorage.setItem('mapData', level.jsonText);
+  window.location.href = 'editor.html';
+};
 
     container.appendChild(playBtn);
     container.appendChild(editBtn);
