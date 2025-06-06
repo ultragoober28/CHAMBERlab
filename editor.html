@@ -135,7 +135,28 @@
     import * as THREE from 'https://esm.sh/three@0.160.0';
     import { TransformControls } from 'https://esm.sh/three@0.160.0/examples/jsm/controls/TransformControls.js';
 
-    window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
+  const savedMapData = localStorage.getItem('mapData');
+  if (savedMapData) {
+    try {
+      const data = JSON.parse(savedMapData);
+      clearScene();
+      data.forEach((item) => {
+        const obj = createObject(item);
+        objects.push({ 
+          name: item.name, 
+          obj, 
+          subtype: item.subType || "ground" 
+        });
+        scene.add(obj);
+        if (item.name !== "PlayerSpawn") selectableObjects.push(obj);
+      });
+      // Clear the stored data so it doesn't reload next time
+      localStorage.removeItem('mapData');
+    } catch (err) {
+      console.error("Error loading map from localStorage:", err);
+    }
+  }
       let camera, scene, renderer;
       let yawObject, pitchObject;
       let transformControls;
@@ -614,22 +635,21 @@ gridTexture.repeat.set(1, 1);
 
 function createObject(data) {
   let obj;
-  const color = SUBTYPE_COLORS[data.subType] || SUBTYPE_COLORS.default;
+  const color = SUBTYPE_COLORS[data.subType] || SUBTYPE_COLORS.ground;
 
-  if (data.name === "Cube") {
-    obj = new THREE.Mesh(
-      new THREE.BoxGeometry(1, 1, 1),
-      new THREE.MeshStandardMaterial({ 
-        color: color,
-        map: gridTexture
-      })
-    );
-  } else if (data.name === "PlayerSpawn") {
+  if (data.type === "Platform" || data.name === "Cube") {
+    const material = new THREE.MeshStandardMaterial({ 
+      color: color,
+      map: gridTexture.clone()
+    });
+    obj = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
+  } else if (data.type === "PlayerSpawn") {
     obj = new THREE.Mesh(
       new THREE.SphereGeometry(0.5),
       new THREE.MeshBasicMaterial({ color: 0xff0000 })
     );
   } else {
+    // Default fallback
     obj = new THREE.Mesh(
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshStandardMaterial({ color: 0x888888 })
