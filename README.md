@@ -1,4 +1,4 @@
-![Screenshot](images/betterLogo.png)
+<img src="images/betterLogo.png" alt="Logo" width="200"/>
 Welcome to **CHAMBERlab** — a fun and simple game where you can **play** levels and **create** your own!
 
 ---
