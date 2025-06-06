@@ -18,6 +18,18 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 
 ---
 
+<details>
+  <summary>Click to expand</summary>
+
+  ### This is a hidden section
+
+  You can write Markdown inside too!
+
+  - Bullet points
+  - **Bold text**
+  - `Code`
+</details>
+
 ## How to Play: Gameplay
 
 - Use **WASD** to move your character and use the mouse to move the camera.
