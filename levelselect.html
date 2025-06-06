@@ -77,12 +77,13 @@
         display: block;
       }
 
-      .level-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 2rem;
-        max-width: 1000px;
-      }
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  width: 100%; /* Add this */
+}
 
       .level-button {
         background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
@@ -130,6 +131,13 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       }
+
+      /*hopefully fixes the weird super big button glitch */
+.level-grid > .level-button {
+  width: 100%; /* Make sure it respects grid cell size */
+  max-width: 200px; /* Optional: Set a max width */
+  margin: 0 auto; /* Center in grid cell */
+}
     </style>
   </head>
   <body>
@@ -243,6 +251,7 @@
     div.className = 'level-button';
     div.style.cursor = 'pointer';
     div.style.position = 'relative';
+    div.style.width = '100%'; // Add this line
 
     // Placeholder image
     const img = document.createElement('img');
