@@ -36,7 +36,7 @@ CHAMBERlab lets you jump right into playing exciting levels made by the communit
 # Editor Buttons
 ## Top Left: Transform buttons
 ![Screenshot](screenshots/TopLeft.png)
-- On the top right, use the M (Move), R (Rotate), and S (Scale) buttons to move, scale and rotate object as you please.
+- On the top left of the screen, use the M (Move), R (Rotate), and S (Scale) buttons to move, scale and rotate object as you please.
 ## Bottom Left: Position Shower and Subtype Editor
 ![Screenshot](screenshots/BottomLeft.png)
 - The position of the selected object is shown on the bottom left.
