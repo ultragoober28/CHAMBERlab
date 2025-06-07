@@ -376,21 +376,17 @@ pasteButton.addEventListener('click', () => {
     obj = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
   }
 
-    // Add subtype to the new object's record
-  objects.push({ 
-    name: copiedObjectData.name, 
-    obj, 
-    subtype: copiedObjectData.subtype 
-  });
-});
-
   // Offset position slightly so it's visible
   obj.position.copy(copiedObjectData.position).add(new THREE.Vector3(1,1,1));
   obj.rotation.fromArray(copiedObjectData.rotation);
   obj.scale.copy(copiedObjectData.scale);
 
   scene.add(obj);
-  objects.push({ name: copiedObjectData.name, obj, subtype: copiedObjectData.subtype });
+  objects.push({ 
+    name: copiedObjectData.name, 
+    obj, 
+    subtype: copiedObjectData.subtype 
+  });
   if (copiedObjectData.name !== "PlayerSpawn") selectableObjects.push(obj);
 
   // Select newly pasted object
@@ -398,7 +394,7 @@ pasteButton.addEventListener('click', () => {
   transformControls.attach(selectedObject);
 
   contextMenu.style.display = 'none';
-};
+});  // This was missing
 
         
 window.addEventListener("contextmenu", (e) => {
