@@ -153,6 +153,13 @@ window.addEventListener('DOMContentLoaded', () => {
       const deleteButton = document.getElementById('delete-object');
 
       const subtypeSelect = document.getElementById('subtype-select');
+
+  
+const textureLoader = new THREE.TextureLoader();
+const gridTexture = textureLoader.load('images/texture_08.png', (texture) => {
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(1, 1);
       
       //subtype selector stuff
 const SUBTYPE_COLORS = {
@@ -199,14 +206,36 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
-  if (e.key === "Shift") {
+  if (e.key === "Control") {
     transformControls.setTranslationSnap(null);
     transformControls.setRotationSnap(null);
     transformControls.setScaleSnap(null);
   }
 });
 
-      
+    const savedMapData = localStorage.getItem('mapData');
+  if (savedMapData) {
+    try {
+      const data = JSON.parse(savedMapData);
+      clearScene();
+      data.forEach((item) => {
+        const obj = createObject(item);
+        objects.push({ 
+          name: item.name, 
+          obj, 
+          subtype: item.subType || "ground" 
+        });
+        scene.add(obj);
+        if (item.name !== "PlayerSpawn") selectableObjects.push(obj);
+      });
+      // Clear the stored data so it doesn't reload next time
+      localStorage.removeItem('mapData');
+    } catch (err) {
+      console.error("Error loading map from localStorage:", err);
+    }
+  }
+  
+  
       function init() {
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x222222);
@@ -445,13 +474,19 @@ window.addEventListener("mousedown", (e) => {
 
 
 
-        window.addEventListener("keydown", (e) => {
-          keys[e.code] = true;
-          if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-            isShiftDown = true;
-            document.body.requestPointerLock();
-          }
-        });
+window.addEventListener("keydown", (e) => {
+  keys[e.code] = true;
+  if ((e.code === "ShiftLeft" || e.code === "ShiftRight") && document.pointerLockElement !== document.body) {
+    // Only request pointer lock if we don't already have it
+    document.body.addEventListener('click', requestPointerLockOnce, { once: true });
+  }
+});
+
+function requestPointerLockOnce() {
+  document.body.requestPointerLock().catch(err => {
+    console.log("Pointer lock error:", err);
+  });
+}
 
         window.addEventListener("keyup", (e) => {
           keys[e.code] = false;
@@ -482,12 +517,6 @@ window.addEventListener("mousedown", (e) => {
         });
       }
 
-// Assuming this is defined somewhere once in your code:
-const textureLoader = new THREE.TextureLoader();
-const gridTexture = textureLoader.load('images/texture_08.png');
-gridTexture.wrapS = THREE.RepeatWrapping;
-gridTexture.wrapT = THREE.RepeatWrapping;
-gridTexture.repeat.set(1, 1);
 
       function updateTextureRepeat(obj) {
   if (obj.material && obj.material.map) {
@@ -708,28 +737,6 @@ function animate() {
   
   renderer.render(scene, camera);
 
-    const savedMapData = localStorage.getItem('mapData');
-  if (savedMapData) {
-    try {
-      const data = JSON.parse(savedMapData);
-      clearScene();
-      data.forEach((item) => {
-        const obj = createObject(item);
-        objects.push({ 
-          name: item.name, 
-          obj, 
-          subtype: item.subType || "ground" 
-        });
-        scene.add(obj);
-        if (item.name !== "PlayerSpawn") selectableObjects.push(obj);
-      });
-      // Clear the stored data so it doesn't reload next time
-      localStorage.removeItem('mapData');
-    } catch (err) {
-      console.error("Error loading map from localStorage:", err);
-    }
-  }
-  
   // Update position label
   const label = document.getElementById('position-label');
   if (selectedObject) {
