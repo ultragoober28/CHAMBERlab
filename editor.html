@@ -310,10 +310,12 @@ window.addEventListener("keyup", (e) => {
 const copyButton = document.getElementById('copy-object');
 const pasteButton = document.getElementById('paste-object');
 
-        window.addEventListener('keydown', (e) => {
-  // Avoid interfering if typing in input/select
-  const activeTag = document.activeElement.tagName.toLowerCase();
-  if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
+    // Modify the keydown event listener
+    window.addEventListener("keydown", (e) => {
+        keys[e.code] = true;
+        // Avoid interfering if typing in input/select
+        const activeTag = document.activeElement.tagName.toLowerCase();
+        if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
 
   if (e.ctrlKey && e.code === 'KeyC') {
     e.preventDefault();
@@ -491,13 +493,14 @@ function requestPointerLockOnce() {
   });
 }
 
-        window.addEventListener("keyup", (e) => {
-          keys[e.code] = false;
-          if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-            isShiftDown = false;
-            document.exitPointerLock();
-          }
-        });
+        keys[e.code] = false;
+        if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+            // FIX: Update isShiftDown based on remaining Shift keys
+            isShiftDown = keys["ShiftLeft"] || keys["ShiftRight"];
+            // Only exit pointer lock when all Shift keys are released
+            if (!isShiftDown) {
+                document.exitPointerLock();
+    });
 
         window.addEventListener("mousemove", (e) => {
           if (!isShiftDown || isDragging) return;
