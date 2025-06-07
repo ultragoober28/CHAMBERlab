@@ -4,25 +4,41 @@
   <meta charset="UTF-8">
   <title>CHAMBERlab</title>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
+      overflow: hidden;
+      height: 100%;
+      font-family: sans-serif;
       background: #111;
       color: white;
-      font-family: sans-serif;
+    }
+
+    /* Canvas behind everything */
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    /* Centered content */
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
     }
 
-    h1 {
-      font-size: 4rem;
+    .title-image {
+      width: 400px;
+      height: auto;
       margin-bottom: 2rem;
     }
 
-    /* Stylish Button */
     button {
       position: relative;
       font-size: 1.5rem;
@@ -47,7 +63,6 @@
       box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
-    /* Shine on hover */
     button::before {
       content: "";
       position: absolute;
@@ -64,7 +79,6 @@
       left: 130%;
     }
 
-    /* Transition overlay */
     .transition-overlay {
       position: fixed;
       top: 0;
@@ -83,20 +97,22 @@
     .transition-overlay.exit {
       left: 100%;
     }
-    
-    .title-image {
-  width: 400px;
-  height: auto;
-}
-
   </style>
 </head>
 <body>
-  <img src="images/betterLogo.png" alt="CHAMBERlab Title" class="title-image">
-  <button onclick="startGame()">START</button>
+  <!-- Matrix Rain Canvas -->
+  <canvas id="matrixCanvas"></canvas>
 
+  <!-- UI Content -->
+  <div class="content">
+    <img src="images/betterLogo.png" alt="CHAMBERlab Title" class="title-image">
+    <button onclick="startGame()">START</button>
+  </div>
+
+  <!-- Transition -->
   <div class="transition-overlay" id="transition"></div>
 
+  <!-- Scripts -->
   <script>
     function startGame() {
       const overlay = document.getElementById('transition');
@@ -105,6 +121,46 @@
         window.location.href = 'levelselect.html';
       }, 600);
     }
+
+    // Matrix Rain Effect
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = 'アァイィウウェエオカキクケコサシスセソ0123456789'.split('');
+    const fontSize = 16;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = new Array(columns).fill(1);
+
+    function drawMatrixRain() {
+      ctx.fillStyle = 'rgba(0, 0, 25, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#00ccff'; // Ocean blue
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+
+      requestAnimationFrame(drawMatrixRain);
+    }
+
+    drawMatrixRain();
+
+    // Resize canvas if window is resized
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 </body>
 </html>
