@@ -136,27 +136,7 @@
     import { TransformControls } from 'https://esm.sh/three@0.160.0/examples/jsm/controls/TransformControls.js';
 
 window.addEventListener('DOMContentLoaded', () => {
-  const savedMapData = localStorage.getItem('mapData');
-  if (savedMapData) {
-    try {
-      const data = JSON.parse(savedMapData);
-      clearScene();
-      data.forEach((item) => {
-        const obj = createObject(item);
-        objects.push({ 
-          name: item.name, 
-          obj, 
-          subtype: item.subType || "ground" 
-        });
-        scene.add(obj);
-        if (item.name !== "PlayerSpawn") selectableObjects.push(obj);
-      });
-      // Clear the stored data so it doesn't reload next time
-      localStorage.removeItem('mapData');
-    } catch (err) {
-      console.error("Error loading map from localStorage:", err);
-    }
-  }
+
       let camera, scene, renderer;
       let yawObject, pitchObject;
       let transformControls;
@@ -727,6 +707,28 @@ function animate() {
   }
   
   renderer.render(scene, camera);
+
+    const savedMapData = localStorage.getItem('mapData');
+  if (savedMapData) {
+    try {
+      const data = JSON.parse(savedMapData);
+      clearScene();
+      data.forEach((item) => {
+        const obj = createObject(item);
+        objects.push({ 
+          name: item.name, 
+          obj, 
+          subtype: item.subType || "ground" 
+        });
+        scene.add(obj);
+        if (item.name !== "PlayerSpawn") selectableObjects.push(obj);
+      });
+      // Clear the stored data so it doesn't reload next time
+      localStorage.removeItem('mapData');
+    } catch (err) {
+      console.error("Error loading map from localStorage:", err);
+    }
+  }
   
   // Update position label
   const label = document.getElementById('position-label');
