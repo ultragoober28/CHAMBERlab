@@ -1,6 +1,8 @@
 <div align="center">
   <img src="images/betterLogo.png" alt="Logo" width="300"/>
 </div>
+
+
 Welcome to **CHAMBERlab** — a fun and simple game where you can **play** levels and **create** your own!
 
 ---
