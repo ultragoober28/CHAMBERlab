@@ -345,13 +345,19 @@ window.addEventListener("mousedown", (e) => {
 
 
 
-window.addEventListener("keyup", (e) => {
+    window.addEventListener("keyup", (e) => {
         keys[e.code] = false;
+        // FIX: Removed extra parenthesis in condition below
         if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-    // Only request pointer lock if we don't already have it
-    document.body.addEventListener('click', requestPointerLockOnce, { once: true });
-  }
-});
+            // FIX: Update isShiftDown based on remaining Shift keys
+            isShiftDown = keys["ShiftLeft"] || keys["ShiftRight"];
+            // Only exit pointer lock when all Shift keys are released
+            if (!isShiftDown) {
+                document.exitPointerLock();
+            }
+        }
+    });
+
 
 function requestPointerLockOnce() {
   document.body.requestPointerLock().catch(err => {
