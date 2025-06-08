@@ -180,10 +180,6 @@ const pasteButton = document.getElementById('paste-object');
     window.addEventListener("keydown", (e) => {
           keys[e.code] = true;
 
-  if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-    isShiftDown = true;
-    requestPointerLockOnce();
-  }
         // Avoid interfering if typing in input/select
         const activeTag = document.activeElement.tagName.toLowerCase();
         if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
@@ -350,18 +346,30 @@ window.addEventListener("mousedown", (e) => {
 
 
 
-    window.addEventListener("keyup", (e) => {
-        keys[e.code] = false;
-        // FIX: Removed extra parenthesis in condition below
-        if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-            // FIX: Update isShiftDown based on remaining Shift keys
-            isShiftDown = keys["ShiftLeft"] || keys["ShiftRight"];
-            // Only exit pointer lock when all Shift keys are released
-            if (!isShiftDown) {
-                document.exitPointerLock();
-            }
-        }
-    });
+// === GLOBAL KEY HANDLING ===
+window.addEventListener("keydown", e => {
+  // Track every key
+  keys[e.code] = true;
+  
+  // SHIFT pressed: engage “fly” mode & pointer lock
+  if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+    if (!isShiftDown) {
+      isShiftDown = true;
+      document.body.requestPointerLock().catch(err => console.warn("Lock failed:", err));
+    }
+  }
+});
+
+window.addEventListener("keyup", e => {
+  // Stop tracking
+  keys[e.code] = false;
+
+  // SHIFT released: exit “fly” mode & pointer lock
+  if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+    isShiftDown = false;
+    document.exitPointerLock();
+  }
+});
 
 
 function requestPointerLockOnce() {
