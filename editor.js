@@ -362,17 +362,6 @@ window.addEventListener("mousedown", (e) => {
 function requestPointerLockOnce() {
   document.body.requestPointerLock().catch(err => {
     console.log("Pointer lock error:", err);
-  });
-}
-
-  keys[e.code] = false;
-  if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-            // FIX: Update isShiftDown based on remaining Shift keys
-            isShiftDown = keys["ShiftLeft"] || keys["ShiftRight"];
-            // Only exit pointer lock when all Shift keys are released
-    if (!isShiftDown) {
-      document.exitPointerLock();
-    }
   }
 });  // <- Properly closed now
 
