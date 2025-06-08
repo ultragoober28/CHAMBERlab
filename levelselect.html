@@ -16,11 +16,7 @@
         position: relative;
       }
 
-/* For centered text */
-.action-button-center {
-  text-align: center;
-  justify-content: center;
-}
+
       
       /* Matrix canvas fills the background */
       #matrix-canvas {
@@ -144,6 +140,7 @@
         font-family: 'DM Sans', sans-serif;
         margin-bottom: 2rem;
         font-size: 1.3rem;
+        text-align: center; /* Forces text to the left */
         padding: 0.75rem 2rem;
         background: linear-gradient(135deg, #007bff, #0056b3);
         border: none;
@@ -241,11 +238,9 @@ function createActionButtons(level) {
   container.style.marginTop = '0.5rem';
   container.style.display = 'flex';
   container.style.gap = '1rem';
-  container.classList.add('action-button-center'); // Default: centered
 
   const playBtn = document.createElement('button');
   playBtn.textContent = 'Play';
-  playBtn.className = 'editor-button action-button'; // Add class
   playBtn.style.padding = '0.3rem 1rem';
   playBtn.style.fontSize = '1rem';
 
