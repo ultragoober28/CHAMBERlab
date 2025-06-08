@@ -172,7 +172,7 @@
     const drops = new Array(columns).fill(1);
 
 let lastTime = 0;
-const frameDelay = 50; // Milliseconds between frames (higher = slower)
+const frameDelay = 25; // Milliseconds between frames (higher = slower)
 
 function drawMatrix(currentTime) {
   if (currentTime - lastTime >= frameDelay) {
