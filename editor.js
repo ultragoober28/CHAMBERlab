@@ -362,17 +362,17 @@ window.addEventListener("mousedown", (e) => {
 function requestPointerLockOnce() {
   document.body.requestPointerLock().catch(err => {
     console.log("Pointer lock error:", err);
-  }
-});  // <- Properly closed now
+  });
+}
 
-        window.addEventListener("mousemove", (e) => {
-          if (!isShiftDown || isDragging) return;
-          yawObject.rotation.y -= e.movementX * 0.002;
-          pitchObject.rotation.x -= e.movementY * 0.002;
-          pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
-        });
-        
-        transformControls.addEventListener('objectChange', () => {
+window.addEventListener("mousemove", (e) => {
+  if (!isShiftDown || isDragging) return;
+  yawObject.rotation.y -= e.movementX * 0.002;
+  pitchObject.rotation.x -= e.movementY * 0.002;
+  pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitchObject.rotation.x));
+});
+
+transformControls.addEventListener('objectChange', () => {
   if (selectedObject) {
     updateTextureRepeat(selectedObject);
   }
