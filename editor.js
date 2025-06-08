@@ -345,9 +345,9 @@ window.addEventListener("mousedown", (e) => {
 
 
 
-window.addEventListener("keydown", (e) => {
-  keys[e.code] = true;
-  if ((e.code === "ShiftLeft" || e.code === "ShiftRight") && document.pointerLockElement !== document.body) {
+window.addEventListener("keyup", (e) => {
+        keys[e.code] = false;
+        if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
     // Only request pointer lock if we don't already have it
     document.body.addEventListener('click', requestPointerLockOnce, { once: true });
   }
@@ -359,14 +359,16 @@ function requestPointerLockOnce() {
   });
 }
 
-        keys[e.code] = false;
-        if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+  keys[e.code] = false;
+  if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
             // FIX: Update isShiftDown based on remaining Shift keys
             isShiftDown = keys["ShiftLeft"] || keys["ShiftRight"];
             // Only exit pointer lock when all Shift keys are released
-            if (!isShiftDown) {
-                document.exitPointerLock();
-    });
+    if (!isShiftDown) {
+      document.exitPointerLock();
+    }
+  }
+});  // <- Properly closed now
 
         window.addEventListener("mousemove", (e) => {
           if (!isShiftDown || isDragging) return;
