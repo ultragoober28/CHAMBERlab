@@ -16,6 +16,12 @@
         position: relative;
       }
 
+/* For centered text */
+.action-button-center {
+  text-align: center;
+  justify-content: center;
+}
+      
       /* Matrix canvas fills the background */
       #matrix-canvas {
         position: fixed;
@@ -230,17 +236,18 @@
     noLevelsText.style.display = loadedLevels.length === 0 ? 'block' : 'none';
   }
 
-  function createActionButtons(level) {
-    const container = document.createElement('div');
-    container.style.marginTop = '0.5rem';
-    container.style.display = 'flex';
-    container.style.gap = '1rem';
+function createActionButtons(level) {
+  const container = document.createElement('div');
+  container.style.marginTop = '0.5rem';
+  container.style.display = 'flex';
+  container.style.gap = '1rem';
+  container.classList.add('action-button-center'); // Default: centered
 
-    const playBtn = document.createElement('button');
-    playBtn.textContent = 'Play';
-    playBtn.className = 'editor-button';
-    playBtn.style.padding = '0.3rem 1rem';
-    playBtn.style.fontSize = '1rem';
+  const playBtn = document.createElement('button');
+  playBtn.textContent = 'Play';
+  playBtn.className = 'editor-button action-button'; // Add class
+  playBtn.style.padding = '0.3rem 1rem';
+  playBtn.style.fontSize = '1rem';
 
     playBtn.onclick = () => {
       localStorage.setItem('mapData', level.jsonText);
