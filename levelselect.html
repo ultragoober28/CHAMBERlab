@@ -205,188 +205,226 @@
       </div>
     </div>
 
-    <script>
-      // Show/hide menu sections
-      function showSection(id) {
-        document.querySelectorAll(".section").forEach((section) => {
-          section.classList.remove("active");
+<script>
+  // Show/hide menu sections
+  function showSection(id) {
+    document.querySelectorAll(".section").forEach((section) => {
+      section.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+  }
+
+  const noLevelsText = document.getElementById('no-levels-text');
+  const loadedLevelsContainer = document.getElementById('loaded-levels');
+  const loadJsonBtn = document.getElementById('load-json-btn');
+
+  // Load levels from localStorage or initialize empty array
+  let loadedLevels = JSON.parse(localStorage.getItem('savedLevels')) || [];
+
+  // Save levels to localStorage
+  function saveLevelsToStorage() {
+    localStorage.setItem('savedLevels', JSON.stringify(loadedLevels));
+  }
+
+  function updateNoLevelsText() {
+    noLevelsText.style.display = loadedLevels.length === 0 ? 'block' : 'none';
+  }
+
+  function createActionButtons(level) {
+    const container = document.createElement('div');
+    container.style.marginTop = '0.5rem';
+    container.style.display = 'flex';
+    container.style.gap = '1rem';
+
+    const playBtn = document.createElement('button');
+    playBtn.textContent = 'Play';
+    playBtn.className = 'editor-button';
+    playBtn.style.padding = '0.3rem 1rem';
+    playBtn.style.fontSize = '1rem';
+
+    playBtn.onclick = () => {
+      localStorage.setItem('mapData', level.jsonText);
+      window.location.href = 'game.html';
+    };
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'editor-button';
+    editBtn.style.padding = '0.3rem 1rem';
+    editBtn.style.fontSize = '1rem';
+
+    editBtn.onclick = () => {
+      localStorage.setItem('mapData', level.jsonText);
+      window.location.href = 'editor.html';
+    };
+
+    // Add delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'editor-button';
+    deleteBtn.style.padding = '0.3rem 1rem';
+    deleteBtn.style.fontSize = '1rem';
+    deleteBtn.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation(); // Prevent triggering the parent click event
+      if (confirm(`Delete level "${level.name}"?`)) {
+        // Remove from array
+        loadedLevels = loadedLevels.filter(l => l.name !== level.name);
+        // Remove from DOM
+        container.parentElement.remove();
+        // Update storage
+        saveLevelsToStorage();
+        updateNoLevelsText();
+      }
+    };
+
+    container.appendChild(playBtn);
+    container.appendChild(editBtn);
+    container.appendChild(deleteBtn);
+    return container;
+  }
+
+  function createLevelButton(level) {
+    const div = document.createElement('div');
+    div.className = 'level-button';
+    div.style.cursor = 'pointer';
+    div.style.position = 'relative';
+    div.style.width = '100%';
+
+    const img = document.createElement('img');
+    img.src = 'images/placeholder.png';
+    img.alt = level.name;
+    div.appendChild(img);
+
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'level-name';
+    nameDiv.textContent = level.name;
+    div.appendChild(nameDiv);
+
+    const actionsContainer = createActionButtons(level);
+    actionsContainer.style.display = 'none';
+    div.appendChild(actionsContainer);
+
+    div.addEventListener('click', () => {
+      if (actionsContainer.style.display === 'none') {
+        document.querySelectorAll('.level-button > div:last-child').forEach(el => {
+          el.style.display = 'none';
         });
-        document.getElementById(id).classList.add("active");
-      }
-
-      // Existing script for loading JSON levels omitted for brevity, keep your existing code here
-      // (You can keep all your existing code below here, no changes needed)
-
-      const noLevelsText = document.getElementById('no-levels-text');
-      const loadedLevelsContainer = document.getElementById('loaded-levels');
-      const loadJsonBtn = document.getElementById('load-json-btn');
-
-      const loadedLevels = [];
-
-      function updateNoLevelsText() {
-        noLevelsText.style.display = loadedLevels.length === 0 ? 'block' : 'none';
-      }
-
-      function createActionButtons(level) {
-        const container = document.createElement('div');
-        container.style.marginTop = '0.5rem';
-        container.style.display = 'flex';
-        container.style.gap = '1rem';
-
-        const playBtn = document.createElement('button');
-        playBtn.textContent = 'Play';
-        playBtn.className = 'editor-button';
-        playBtn.style.padding = '0.3rem 1rem';
-        playBtn.style.fontSize = '1rem';
-
-        playBtn.onclick = () => {
-          localStorage.setItem('mapData', level.jsonText);
-          window.location.href = 'game.html';
-        };
-
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Edit';
-        editBtn.className = 'editor-button';
-        editBtn.style.padding = '0.3rem 1rem';
-        editBtn.style.fontSize = '1rem';
-
-        editBtn.onclick = () => {
-          localStorage.setItem('mapData', level.jsonText);
-          window.location.href = 'editor.html';
-        };
-
-        container.appendChild(playBtn);
-        container.appendChild(editBtn);
-        return container;
-      }
-
-      function createLevelButton(level) {
-        const div = document.createElement('div');
-        div.className = 'level-button';
-        div.style.cursor = 'pointer';
-        div.style.position = 'relative';
-        div.style.width = '100%';
-
-        const img = document.createElement('img');
-        img.src = 'images/placeholder.png';
-        img.alt = level.name;
-        div.appendChild(img);
-
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'level-name';
-        nameDiv.textContent = level.name;
-        div.appendChild(nameDiv);
-
-        const actionsContainer = createActionButtons(level);
+        actionsContainer.style.display = 'flex';
+      } else {
         actionsContainer.style.display = 'none';
-        div.appendChild(actionsContainer);
-
-        div.addEventListener('click', () => {
-          if (actionsContainer.style.display === 'none') {
-            document.querySelectorAll('.level-button > div:last-child').forEach(el => {
-              el.style.display = 'none';
-            });
-            actionsContainer.style.display = 'flex';
-          } else {
-            actionsContainer.style.display = 'none';
-          }
-        });
-
-        return div;
       }
+    });
 
-      loadJsonBtn.addEventListener('click', () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
+    return div;
+  }
 
-        input.onchange = e => {
-          const file = e.target.files[0];
-          if (!file) return;
+  function loadLevelsFromStorage() {
+    loadedLevelsContainer.innerHTML = ''; // Clear existing levels
+    
+    loadedLevels.forEach(level => {
+      const levelBtn = createLevelButton(level);
+      loadedLevelsContainer.appendChild(levelBtn);
+    });
+    
+    updateNoLevelsText();
+  }
 
-          const reader = new FileReader();
-          reader.onload = () => {
-            try {
-              JSON.parse(reader.result);
+  loadJsonBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
 
-              const levelName = file.name.replace(/\.json$/i, '');
-              const levelData = { name: levelName, jsonText: reader.result };
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-              if (loadedLevels.some(l => l.name === levelName)) {
-                alert('Level with that name already loaded.');
-                return;
-              }
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          JSON.parse(reader.result);
 
-              loadedLevels.push(levelData);
+          const levelName = file.name.replace(/\.json$/i, '');
+          const levelData = { name: levelName, jsonText: reader.result };
 
-              const levelBtn = createLevelButton(levelData);
-              loadedLevelsContainer.appendChild(levelBtn);
+          if (loadedLevels.some(l => l.name === levelName)) {
+            alert('Level with that name already loaded.');
+            return;
+          }
 
-              updateNoLevelsText();
-            } catch (err) {
-              alert('Invalid JSON file.');
-            }
-          };
-          reader.readAsText(file);
-        };
+          loadedLevels.push(levelData);
+          saveLevelsToStorage();
 
-        input.click();
-      });
+          const levelBtn = createLevelButton(levelData);
+          loadedLevelsContainer.appendChild(levelBtn);
 
-      updateNoLevelsText();
+          updateNoLevelsText();
+        } catch (err) {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    };
 
-      // MATRIX RAIN SCRIPT
-      (() => {
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
+    input.click();
+  });
 
-        // set canvas full screen
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+  // Load levels when page loads
+  document.addEventListener('DOMContentLoaded', loadLevelsFromStorage);
 
-        // characters - using Katakana, numbers and letters for the rain
-        const letters = 'アァイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const fontSize = 16;
-        const columns = Math.floor(width / fontSize);
+  // MATRIX RAIN SCRIPT
+  (() => {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
 
-        // create an array of drops - one per column
-        const drops = Array(columns).fill(1);
+    // set canvas full screen
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
 
-        function draw() {
-          // translucent BG to create the trail effect
-          ctx.fillStyle = 'rgba(28, 28, 28, 0.1)';
-          ctx.fillRect(0, 0, width, height);
+    // characters - using Katakana, numbers and letters for the rain
+    const letters = 'アァイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = 16;
+    const columns = Math.floor(width / fontSize);
+
+    // create an array of drops - one per column
+    const drops = Array(columns).fill(1);
+
+    function draw() {
+      // translucent BG to create the trail effect
+      ctx.fillStyle = 'rgba(28, 28, 28, 0.1)';
+      ctx.fillRect(0, 0, width, height);
 
       ctx.fillStyle = '#949494';
       ctx.font = fontSize + 'px monospace';
 
-          for (let i = 0; i < drops.length; i++) {
-            const text = letters.charAt(Math.floor(Math.random() * letters.length));
-            const x = i * fontSize;
-            const y = drops[i] * fontSize;
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
 
-            ctx.fillText(text, x, y);
+        ctx.fillText(text, x, y);
 
-            // reset drop to top randomly after it passes bottom
-            if (y > height && Math.random() > 0.975) drops[i] = 0;
+        // reset drop to top randomly after it passes bottom
+        if (y > height && Math.random() > 0.975) drops[i] = 0;
 
-            drops[i]++;
-          }
-        }
+        drops[i]++;
+      }
+    }
 
-        function resize() {
-          width = canvas.width = window.innerWidth;
-          height = canvas.height = window.innerHeight;
-          drops.length = 0;
-          for (let i = 0; i < Math.floor(width / fontSize); i++) {
-            drops[i] = 1;
-          }
-        }
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      drops.length = 0;
+      for (let i = 0; i < Math.floor(width / fontSize); i++) {
+        drops[i] = 1;
+      }
+    }
 
-        window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize);
 
-        setInterval(draw, 33);
-      })();
-    </script>
+    setInterval(draw, 33);
+  })();
+</script>
   </body>
 </html>
