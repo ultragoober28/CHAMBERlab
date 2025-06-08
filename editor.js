@@ -178,7 +178,12 @@ const pasteButton = document.getElementById('paste-object');
 
     // Modify the keydown event listener
     window.addEventListener("keydown", (e) => {
-        keys[e.code] = true;
+          keys[e.code] = true;
+
+  if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+    isShiftDown = true;
+    requestPointerLockOnce();
+  }
         // Avoid interfering if typing in input/select
         const activeTag = document.activeElement.tagName.toLowerCase();
         if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') return;
