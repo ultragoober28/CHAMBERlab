@@ -310,6 +310,11 @@
       color: #ffffff;
     }
 
+    <div id="light-editor" style="display: none; position: absolute; bottom: 20px; left: 480px; color: #ffffff; background: rgba(25, 25, 30, 0.9); backdrop-filter: blur(10px); padding: 12px 16px; border-radius: 8px; font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace; font-size: 13px; font-weight: 500; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+  <span>Light Color:</span>
+  <input type="color" id="light-color" value="#ffffff">
+</div>
+
     /* Instructions overlay */
     .instructions {
       position: absolute;
@@ -431,6 +436,7 @@
         <div class="dropdown-content">
           <button id="add-block">🟦 Add Block</button>
           <button id="add-player-spawn">🔴 Player Spawn</button>
+          <button id="add-light">💡 Add Light</button>
         </div>
       </div>
       
