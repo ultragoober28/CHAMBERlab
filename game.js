@@ -121,10 +121,29 @@
 
           scene.add(mesh);
           platforms.push(mesh);
-        }
-      });
+          
+    } else if (obj.type === 'Light') {
+      const light = new THREE.PointLight(obj.color || 0xffffff, 1, 10);
+      light.position.set(...obj.position);
+      light.castShadow = true;
+      light.shadow.mapSize.width = 512;
+      light.shadow.mapSize.height = 512;
+      light.shadow.camera.near = 0.5;
+      light.shadow.camera.far = 20;
+      scene.add(light);
+      
+      // Optional: Add a small sphere to visualize the light position
+      const sphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.2),
+        new THREE.MeshBasicMaterial({ color: obj.color || 0xffffff })
+      );
+      sphere.position.copy(light.position);
+      scene.add(sphere);
     }
-
+  });
+}
+    
+    
     // Create renderer with shadow support
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
