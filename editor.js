@@ -316,6 +316,20 @@ contextMenu.style.display = "block";
   lightEditor.style.display = "none";
 }
 
+      if (record && record.subtype === "lighting") {
+  lightRangeEditor.style.display = "block";
+  lightRangeInput.value = selectedObject.userData.range || 5;
+  rangeValue.textContent = selectedObject.userData.range || 5;
+  if (selectedObject.userData.rangeIndicator) {
+    selectedObject.userData.rangeIndicator.visible = true;
+  }
+} else {
+  lightRangeEditor.style.display = "none";
+  if (selectedObject && selectedObject.userData.rangeIndicator) {
+    selectedObject.userData.rangeIndicator.visible = false;
+  }
+}
+
 const record = objects.find(o => o.obj === selectedObject);
 if (record && record.name !== "PlayerSpawn") {
   subtypeEditor.style.display = "block";
@@ -366,7 +380,21 @@ window.addEventListener("mousedown", (e) => {
   }
 });
 
+const lightRangeEditor = document.getElementById('light-range-editor');
+const lightRangeInput = document.getElementById('light-range');
+const rangeValue = document.getElementById('range-value');
 
+lightRangeInput.addEventListener('input', (e) => {
+  if (!selectedObject) return;
+  const range = parseFloat(e.target.value);
+  rangeValue.textContent = range;
+  
+  if (selectedObject.userData.rangeIndicator) {
+    selectedObject.userData.range = range;
+    selectedObject.userData.rangeIndicator.scale.set(range, range, range);
+    selectedObject.userData.rangeIndicator.visible = true;
+  }
+});
 
 // === GLOBAL KEY HANDLING ===
 window.addEventListener("keydown", e => {
@@ -410,6 +438,16 @@ window.addEventListener("mousemove", (e) => {
 transformControls.addEventListener('objectChange', () => {
   if (selectedObject) {
     updateTextureRepeat(selectedObject);
+  }
+});
+          
+transformControls.addEventListener('objectChange', () => {
+  if (selectedObject && selectedObject.userData.rangeIndicator) {
+    selectedObject.userData.rangeIndicator.scale.set(
+      selectedObject.userData.range,
+      selectedObject.userData.range,
+      selectedObject.userData.range
+    );
   }
 });
 
@@ -496,8 +534,27 @@ function addPlayerSpawnPoint() {
 function addLight() {
   const obj = new THREE.Mesh(
     new THREE.SphereGeometry(0.3),
-    new THREE.MeshBasicMaterial({ color: 0xffffff })
+    new THREE.MeshBasicMaterial({ 
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8
+    })
   );
+  
+  // Add range indicator (only visible in editor)
+  const rangeIndicator = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.1,
+      wireframe: true
+    })
+  );
+  rangeIndicator.visible = false;
+  obj.add(rangeIndicator);
+  obj.userData.rangeIndicator = rangeIndicator;
+  obj.userData.range = 5; // Default range
   obj.position.set(0, 0, 0);
   scene.add(obj);
   
@@ -677,6 +734,19 @@ function onLeftClick(event) {
   lightColorPicker.value = "#" + (record.color || 0xffffff).toString(16).padStart(6, '0');
 } else {
   lightEditor.style.display = "none";
+}
+    if (record && record.subtype === "lighting") {
+  lightRangeEditor.style.display = "block";
+  lightRangeInput.value = selectedObject.userData.range || 5;
+  rangeValue.textContent = selectedObject.userData.range || 5;
+  if (selectedObject.userData.rangeIndicator) {
+    selectedObject.userData.rangeIndicator.visible = true;
+  }
+} else {
+  lightRangeEditor.style.display = "none";
+  if (selectedObject && selectedObject.userData.rangeIndicator) {
+    selectedObject.userData.rangeIndicator.visible = false;
+  }
 }
 }
 
