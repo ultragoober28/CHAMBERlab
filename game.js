@@ -122,24 +122,28 @@
           scene.add(mesh);
           platforms.push(mesh);
           
-    } else if (obj.type === 'Light') {
-      const light = new THREE.PointLight(obj.color || 0xffffff, 1, 10);
-      light.position.set(...obj.position);
-      light.castShadow = true;
+// Modify the light creation in game.js
+else if (obj.type === 'Light') {
+
+  const light = new THREE.PointLight(
+    obj.color || 0xffffff,
+    1,                    // Intensity
+    obj.range || 10,      // Use saved range or default
+    2                     // Decay
+  );
+  light.position.set(...obj.position);
+  light.castShadow = true;
+  
       light.shadow.mapSize.width = 512;
       light.shadow.mapSize.height = 512;
       light.shadow.camera.near = 0.5;
       light.shadow.camera.far = 20;
-      scene.add(light);
-      
-      // Optional: Add a small sphere to visualize the light position
-      const sphere = new THREE.Mesh(
-        new THREE.SphereGeometry(0.2),
-        new THREE.MeshBasicMaterial({ color: obj.color || 0xffffff })
-      );
-      sphere.position.copy(light.position);
-      scene.add(sphere);
-    }
+  
+  // Remove the visual indicator in game
+  // (Don't add any mesh, just the light)
+  
+  scene.add(light);
+}
   });
 }
     
