@@ -32,9 +32,9 @@ const gridTexture = textureLoader.load('images/texture_08.png', (texture) => {
       
       //subtype selector stuff
 const SUBTYPE_COLORS = {
-  ground: 0x4CAF50,  // Green
-  wall: 0xF44336     // Red
-  // No default - subtypes MUST have defined colors
+  ground: 0x4CAF50,
+  wall: 0xF44336,
+  lighting: 0xffffff // Default white for lights
 };
 
       init();
@@ -63,6 +63,19 @@ selectedSubtypeDropdown.addEventListener("change", () => {
     // Update material color
     const color = SUBTYPE_COLORS[newSubtype] || SUBTYPE_COLORS.default;
     selectedObject.material.color.setHex(color);
+  }
+});
+
+    const lightEditor = document.getElementById("light-editor");
+const lightColorPicker = document.getElementById("light-color");
+
+lightColorPicker.addEventListener("input", () => {
+  if (!selectedObject) return;
+  const record = objects.find(o => o.obj === selectedObject);
+  if (record && record.subtype === "lighting") {
+    const color = new THREE.Color(lightColorPicker.value);
+    selectedObject.material.color.setHex(color.getHex());
+    record.color = color.getHex(); // Store the color in the object record
   }
 });
       
@@ -294,6 +307,15 @@ contextMenu.style.left = `${e.clientX}px`;
 contextMenu.style.top = `${e.clientY}px`;
 contextMenu.style.display = "block";
 
+      if (record && record.subtype === "lighting") {
+  subtypeEditor.style.display = "block";
+  lightEditor.style.display = "block";
+  selectedSubtypeDropdown.value = "lighting";
+  lightColorPicker.value = "#" + record.color.toString(16).padStart(6, '0');
+} else {
+  lightEditor.style.display = "none";
+}
+
 const record = objects.find(o => o.obj === selectedObject);
 if (record && record.name !== "PlayerSpawn") {
   subtypeEditor.style.display = "block";
@@ -469,19 +491,45 @@ function addPlayerSpawnPoint() {
   transformControls.attach(selectedObject);
 }
 
-// Mode buttons logic — modify setMode function:
+    document.getElementById('add-light').addEventListener('click', addLight);
+
+function addLight() {
+  const obj = new THREE.Mesh(
+    new THREE.SphereGeometry(0.3),
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
+  );
+  obj.position.set(0, 0, 0);
+  scene.add(obj);
+  
+  objects.push({ 
+    name: "Light", 
+    obj: obj, 
+    subtype: "lighting",
+    color: 0xffffff // Default white
+  });
+  
+  selectableObjects.push(obj);
+  selectedObject = obj;
+  transformControls.attach(selectedObject);
+  
+  // Show editors
+  subtypeEditor.style.display = "block";
+  lightEditor.style.display = "block";
+  selectedSubtypeDropdown.value = "lighting";
+}
 
 
 
-      function saveMap() {
-        const data = objects.map(({ name, obj, subtype }) => ({
-          type: name === "PlayerSpawn" ? "PlayerSpawn" : "Platform",
-          name,
-          subType: subtype || "ground",
-          position: obj.position.toArray(),
-          rotation: [...obj.rotation.toArray(), obj.rotation.order],
-          scale: obj.scale.toArray(),
-        }));
+function saveMap() {
+  const data = objects.map(({ name, obj, subtype, color }) => ({
+    type: name === "PlayerSpawn" ? "PlayerSpawn" : name === "Light" ? "Light" : "Platform",
+    name,
+    subType: subtype || (name === "Light" ? "lighting" : "ground"),
+    position: obj.position.toArray(),
+    rotation: [...obj.rotation.toArray(), obj.rotation.order],
+    scale: obj.scale.toArray(),
+    color: name === "Light" ? (color || 0xffffff) : undefined
+  }));
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -523,6 +571,29 @@ gridTexture.repeat.set(1, 1);
 function createObject(data) {
   let obj;
   const color = SUBTYPE_COLORS[data.subType] || SUBTYPE_COLORS.ground;
+
+  if (data.type === "Platform" || data.name === "Cube") {
+    const material = new THREE.MeshStandardMaterial({ 
+      color: color,
+      map: gridTexture.clone()
+    });
+    obj = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
+  } else if (data.type === "PlayerSpawn") {
+    obj = new THREE.Mesh(
+      new THREE.SphereGeometry(0.5),
+      new THREE.MeshBasicMaterial({ color: 0xff0000 })
+    );
+  } else if (data.type === "Light") {
+    obj = new THREE.Mesh(
+      new THREE.SphereGeometry(0.3),
+      new THREE.MeshBasicMaterial({ color: data.color || 0xffffff })
+    );
+  } else {
+    obj = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1, 1),
+      new THREE.MeshStandardMaterial({ color: 0x888888 })
+    );
+  }
 
   if (data.type === "Platform" || data.name === "Cube") {
     const material = new THREE.MeshStandardMaterial({ 
@@ -599,6 +670,14 @@ function onLeftClick(event) {
       subtypeEditor.style.display = "none";
     }
   }
+    if (record.name === "Light") {
+  subtypeEditor.style.display = "block";
+  lightEditor.style.display = "block";
+  selectedSubtypeDropdown.value = record.subtype || "lighting";
+  lightColorPicker.value = "#" + (record.color || 0xffffff).toString(16).padStart(6, '0');
+} else {
+  lightEditor.style.display = "none";
+}
 }
 
 
