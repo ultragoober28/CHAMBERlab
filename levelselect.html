@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
   <head>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans&display=swap" rel="stylesheet">
@@ -17,242 +16,199 @@
         position: relative;
       }
 
-```
-  /* Matrix canvas fills the background */
-  #matrix-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none; /* Let clicks pass through */
-    z-index: 0;
-    background: #1c1c1c; /* fallback bg */
-  }
 
-  /* Transition overlay for OUT animation */
-  .transition-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    z-index: 9999;
-    /* Start covering the screen */
-    transform: translateX(0);
-    transition: transform 0.8s ease-in-out;
-  }
+      
+      /* Matrix canvas fills the background */
+      #matrix-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none; /* Let clicks pass through */
+        z-index: 0;
+        background: #1c1c1c; /* fallback bg */
+      }
 
-  /* Class to trigger the out transition */
-  .transition-overlay.slide-out {
-    transform: translateX(100%);
-  }
+      .sidebar {
+        position: relative; /* to stack above canvas */
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 200px;
+        background: #111;
+        padding: 2rem 1rem;
+        border-right: 2px solid #2c2c2c;
+      }
 
-  .sidebar {
-    position: relative; /* to stack above canvas */
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 200px;
-    background: #111;
-    padding: 2rem 1rem;
-    border-right: 2px solid #2c2c2c;
-  }
+      .content {
+        position: relative; /* to stack above canvas */
+        z-index: 1;
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
 
-  .content {
-    position: relative; /* to stack above canvas */
-    z-index: 1;
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-  }
+      .title-container {
+        padding: 1.5rem 0.5rem 2rem;
+        text-align: center;
+        border-bottom: 2px solid #2c2c2c;
+        margin-bottom: 1rem;
+      }
 
-  .title-container {
-    padding: 1.5rem 0.5rem 2rem;
-    text-align: center;
-    border-bottom: 2px solid #2c2c2c;
-    margin-bottom: 1rem;
-  }
+      .game-title-image {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+        transition: transform 0.3s ease;
+      }
 
-  .game-title-image {
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
-    transition: transform 0.3s ease;
-  }
+      .game-title-image:hover {
+        transform: scale(1.03);
+      }
 
-  .game-title-image:hover {
-    transform: scale(1.03);
-  }
+      .menu-button {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 1.2rem;
+        padding: 0.75rem 1rem;
+        background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
 
-  .menu-button {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1.2rem;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+      .menu-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      }
 
-  .menu-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  }
+      .section {
+        display: none;
+      }
 
-  .section {
-    display: none;
-  }
+      .section.active {
+        display: block;
+      }
 
-  .section.active {
-    display: block;
-  }
+      .level-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        width: 100%;
+      }
 
-  .level-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 2rem;
-    max-width: 1000px;
-    width: 100%;
-  }
+      .level-button {
+        background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
+        border-radius: 12px;
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        width: 100%;
+        max-width: 200px;
+        margin: 0 auto;
+        position: relative;
+      }
 
-  .level-button {
-    background: linear-gradient(135deg, #2c2c2c, #1f1f1f);
-    border-radius: 12px;
-    overflow: hidden;
-    text-align: center;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    width: 100%;
-    max-width: 200px;
-    margin: 0 auto;
-    position: relative;
-  }
+      .level-button:hover {
+        transform: scale(1.06);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      }
 
-  .level-button:hover {
-    transform: scale(1.06);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-  }
+      .level-button img {
+        width: 75%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        background: #555;
+      }
 
-  .level-button img {
-    width: 75%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    background: #555;
-  }
+      .level-name {
+        font-family: 'DM Sans', sans-serif;
+        padding: 0.5rem;
+        font-size: 1.1rem;
+        background: #222;
+      }
 
-  .level-name {
-    font-family: 'DM Sans', sans-serif;
-    padding: 0.5rem;
-    font-size: 1.1rem;
-    background: #222;
-  }
+      .editor-button {
+        font-family: 'DM Sans', sans-serif;
+        margin-bottom: 2rem;
+        font-size: 1.3rem;
+        text-align: center; /* Forces text to the left */
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        overflow: hidden;
+      }
 
-  .editor-button {
-    font-family: 'DM Sans', sans-serif;
-    margin-bottom: 2rem;
-    font-size: 1.3rem;
-    text-align: center; /* Forces text to the left */
-    padding: 0.75rem 2rem;
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
-  }
-
-  .editor-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-  }
-</style>
-```
-
+      .editor-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+    </style>
   </head>
   <body>
     <canvas id="matrix-canvas"></canvas>
 
-```
-<!-- Transition overlay -->
-<div class="transition-overlay" id="transition"></div>
-
-<div class="sidebar">
-  <div class="title-container">
-    <img src="images/betterLogo.png" alt="Game Title" class="game-title-image" />
-  </div>
-
-  <button class="menu-button" onclick="showSection('levels')">Play Levels</button>
-  <button class="menu-button" onclick="showSection('editor')">Level Editor</button>
-  <button class="menu-button" onclick="showSection('settings')">Settings</button>
-</div>
-
-<div class="content">
-  <div id="levels" class="section active">
-    <h1>Select a Level</h1>
-    <div class="level-grid">
-      <div class="level-button">
-        <img src="images/placeholder.png" alt="Level 1" />
-        <div class="level-name">Level 1</div>
+    <div class="sidebar">
+      <div class="title-container">
+        <img src="images/betterLogo.png" alt="Game Title" class="game-title-image" />
       </div>
-      <div class="level-button">
-        <img src="images/placeholder.png" alt="Level 2" />
-        <div class="level-name">Level 2</div>
-      </div>
-      <div class="level-button">
-        <img src="images/placeholder.png" alt="Level 3" />
-        <div class="level-name">Level 3</div>
-      </div>
-    </div>
-  </div>
 
-  <div id="editor" class="section">
-    <h1>Level Editor</h1>
-    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-      <button class="editor-button" onclick="transitionToPage('editor.html')">+ Create New Level</button>
-      <button class="editor-button" id="load-json-btn">Load JSON</button>
+      <button class="menu-button" onclick="showSection('levels')">Play Levels</button>
+      <button class="menu-button" onclick="showSection('editor')">Level Editor</button>
+      <button class="menu-button" onclick="showSection('settings')">Settings</button>
     </div>
 
-    <p id="no-levels-text">No levels were created yet.</p>
+    <div class="content">
+      <div id="levels" class="section active">
+        <h1>Select a Level</h1>
+        <div class="level-grid">
+          <div class="level-button">
+            <img src="images/placeholder.png" alt="Level 1" />
+            <div class="level-name">Level 1</div>
+          </div>
+          <div class="level-button">
+            <img src="images/placeholder.png" alt="Level 2" />
+            <div class="level-name">Level 2</div>
+          </div>
+          <div class="level-button">
+            <img src="images/placeholder.png" alt="Level 3" />
+            <div class="level-name">Level 3</div>
+          </div>
+        </div>
+      </div>
 
-    <div class="level-grid" id="loaded-levels" style="margin-top: 1rem;"></div>
-  </div>
+      <div id="editor" class="section">
+        <h1>Level Editor</h1>
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+          <button class="editor-button" onclick="location.href='editor.html'">+ Create New Level</button>
+          <button class="editor-button" id="load-json-btn">Load JSON</button>
+        </div>
 
-  <div id="settings" class="section">
-    <h1>Settings</h1>
-    <p>Settings options will go here.</p>
-  </div>
-</div>
-```
+        <p id="no-levels-text">No levels were created yet.</p>
+
+        <div class="level-grid" id="loaded-levels" style="margin-top: 1rem;"></div>
+      </div>
+
+      <div id="settings" class="section">
+        <h1>Settings</h1>
+        <p>Settings options will go here.</p>
+      </div>
+    </div>
 
 <script>
-  // Trigger out transition when page loads
-  window.addEventListener('load', () => {
-    const overlay = document.getElementById('transition');
-    // Small delay to ensure the overlay is visible first
-    setTimeout(() => {
-      overlay.classList.add('slide-out');
-    }, 100);
-  });
-
-  // Function to handle transitions to other pages
-  function transitionToPage(url) {
-    const overlay = document.getElementById('transition');
-    overlay.classList.remove('slide-out');
-    setTimeout(() => {
-      window.location.href = url;
-    }, 800);
-  }
-
   // Show/hide menu sections
   function showSection(id) {
     document.querySelectorAll(".section").forEach((section) => {
@@ -290,7 +246,7 @@ function createActionButtons(level) {
 
     playBtn.onclick = () => {
       localStorage.setItem('mapData', level.jsonText);
-      transitionToPage('game.html');
+      window.location.href = 'game.html';
     };
 
     const editBtn = document.createElement('button');
@@ -301,7 +257,7 @@ function createActionButtons(level) {
 
     editBtn.onclick = () => {
       localStorage.setItem('mapData', level.jsonText);
-      transitionToPage('editor.html');
+      window.location.href = 'editor.html';
     };
 
     // Add delete button
@@ -473,6 +429,5 @@ function createActionButtons(level) {
     setInterval(draw, 33);
   })();
 </script>
-
   </body>
 </html>
