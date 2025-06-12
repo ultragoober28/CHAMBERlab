@@ -30,6 +30,25 @@
         background: #1c1c1c; /* fallback bg */
       }
 
+      /* Transition overlay for OUT animation */
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 9999;
+  /* Start covering the screen */
+  transform: translateX(0);
+  transition: transform 0.8s ease-in-out;
+}
+
+      /* Class to trigger the out transition */
+.transition-overlay.slide-out {
+  transform: translateX(100%);
+}
+
       .sidebar {
         position: relative; /* to stack above canvas */
         z-index: 1;
@@ -161,6 +180,9 @@
   <body>
     <canvas id="matrix-canvas"></canvas>
 
+    <!-- Transition overlay -->
+<div class="transition-overlay" id="transition"></div>
+
     <div class="sidebar">
       <div class="title-container">
         <img src="images/betterLogo.png" alt="Game Title" class="game-title-image" />
@@ -209,6 +231,15 @@
     </div>
 
 <script>
+
+  // Trigger out transition when page loads
+window.addEventListener('load', () => {
+  const overlay = document.getElementById('transition');
+  // Small delay to ensure the overlay is visible first
+  setTimeout(() => {
+    overlay.classList.add('slide-out');
+  }, 100);
+});
   // Show/hide menu sections
   function showSection(id) {
     document.querySelectorAll(".section").forEach((section) => {
