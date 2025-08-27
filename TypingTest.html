@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>super fast text for leak</title>
+<style>
+    body {
+        background-color: #000;
+        color: #0f0;
+        font-family: monospace;
+        font-size: 16px;
+        padding: 20px;
+        overflow-x: hidden;
+    }
+    #output {
+        white-space: pre-wrap;
+    }
+</style>
+</head>
+<body>
 
+<div id="output"></div>
+
+<script>
+// Path to your text file
+const txtFile = "yourfile.txt"; // <-- put your .txt file path here
+const output = document.getElementById("output");
+let textData = "";
+
+// Fetch the text file
+fetch(txtFile)
+    .then(response => response.text())
+    .then(data => {
+        textData = data;
+        typeEffect(textData);
+    })
+    .catch(err => console.error("Failed to load text file:", err));
+
+// Typewriter effect (insanely fast)
+function typeEffect(text) {
+    let i = 0;
+    const speed = 0; // milliseconds per character; 0 = basically instant
+    function addChar() {
+        if (i < text.length) {
+            output.textContent += text[i];
+            i++;
+            setTimeout(addChar, speed);
+        }
+    }
+    addChar();
+}
+</script>
+
+</body>
+</html>
