@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>super fast text for leak</title>
+<title>Blazing Text Display</title>
 <style>
     body {
         background-color: #000;
@@ -12,35 +12,56 @@
         font-size: 16px;
         padding: 20px;
         overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
     }
     #output {
         white-space: pre-wrap;
+        width: 90%;
+        max-width: 800px;
+        margin-top: 20px;
+    }
+    #startBtn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #000;
+        color: #0f0;
+        border: 2px solid #0f0;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    #startBtn:hover {
+        background-color: #0f0;
+        color: #000;
     }
 </style>
 </head>
 <body>
 
+<button id="startBtn">Start</button>
 <div id="output"></div>
 
 <script>
-// Path to your text file
-const txtFile = "yourfile.txt"; // <-- put your .txt file path here
+const txtFile = "assetlist.txt"; // <-- put your .txt file path here
 const output = document.getElementById("output");
-let textData = "";
+const startBtn = document.getElementById("startBtn");
 
-// Fetch the text file
-fetch(txtFile)
-    .then(response => response.text())
-    .then(data => {
-        textData = data;
-        typeEffect(textData);
-    })
-    .catch(err => console.error("Failed to load text file:", err));
+startBtn.addEventListener("click", () => {
+    startBtn.style.display = "none"; // hide button once clicked
+    fetch(txtFile)
+        .then(response => response.text())
+        .then(data => {
+            typeEffect(data);
+        })
+        .catch(err => console.error("Failed to load text file:", err));
+});
 
-// Typewriter effect (insanely fast)
 function typeEffect(text) {
     let i = 0;
-    const speed = 0; // milliseconds per character; 0 = basically instant
+    const speed = 0; // 0ms per character for instant insane speed
     function addChar() {
         if (i < text.length) {
             output.textContent += text[i];
