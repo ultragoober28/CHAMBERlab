@@ -9,7 +9,7 @@
         background-color: #000;
         color: #0f0;
         font-family: monospace;
-        font-size: 16px;
+        font-size: 14px;
         padding: 20px;
         overflow-x: hidden;
         display: flex;
@@ -21,8 +21,10 @@
     #output {
         white-space: pre-wrap;
         width: 90%;
-        max-width: 800px;
+        max-width: 900px;
         margin-top: 20px;
+        overflow-y: auto;
+        height: 90%;
     }
     #startBtn {
         padding: 10px 20px;
@@ -31,7 +33,6 @@
         color: #0f0;
         border: 2px solid #0f0;
         cursor: pointer;
-        transition: all 0.2s;
     }
     #startBtn:hover {
         background-color: #0f0;
@@ -45,31 +46,31 @@
 <div id="output"></div>
 
 <script>
-const txtFile = "assetlist.txt"; // <-- put your .txt file path here
+const txtFile = "assetlist.txt"; // <-- your text file path
 const output = document.getElementById("output");
 const startBtn = document.getElementById("startBtn");
 
 startBtn.addEventListener("click", () => {
-    startBtn.style.display = "none"; // hide button once clicked
+    startBtn.style.display = "none"; // hide button
     fetch(txtFile)
-        .then(response => response.text())
-        .then(data => {
-            typeEffect(data);
-        })
+        .then(res => res.text())
+        .then(data => typeEffectFast(data))
         .catch(err => console.error("Failed to load text file:", err));
 });
 
-function typeEffect(text) {
-    let i = 0;
-    const speed = 0; // 0ms per character for instant insane speed
-    function addChar() {
-        if (i < text.length) {
-            output.textContent += text[i];
-            i++;
-            setTimeout(addChar, speed);
+function typeEffectFast(text) {
+    const chunkSize = 500; // number of characters per batch
+    let index = 0;
+
+    function addChunk() {
+        if (index < text.length) {
+            output.textContent += text.slice(index, index + chunkSize);
+            index += chunkSize;
+            requestAnimationFrame(addChunk); // schedule next chunk ASAP
         }
     }
-    addChar();
+
+    addChunk();
 }
 </script>
 
